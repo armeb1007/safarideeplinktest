@@ -1,9 +1,12 @@
 <html>
 <head>
-   <meta http-equiv="refresh" content="0.5; url=https://armeb1007.github.io/safarideeplinktest/deeplink.html">
+   <script>
+      setTimeout(function() {
+         window.location.href = "amazon://";
+      }, 500); // Redirects to Amazon after 0.5 seconds
+   </script>
 </head>
 <body>
-   <h2>Final Redirect</h2>
-   <p>Redirecting to another URL before launching the app...</p>
+   <h2>Attempting to force Amazon to open...</h2>
 </body>
 </html>
