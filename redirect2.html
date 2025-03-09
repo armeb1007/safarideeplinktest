@@ -2,12 +2,15 @@
 <head>
    <script>
       setTimeout(function() {
-         window.location.href = "venmo://";
-      }, 500); // Redirects to Venmo after 0.5 seconds
+         var link = document.createElement('a');
+         link.href = "venmo://";
+         document.body.appendChild(link);
+         link.click();
+      }, 500); // Creates and clicks the link in 0.5 seconds
    </script>
 </head>
 <body>
    <h2>Final Redirect</h2>
-   <p>Now executing the deep link...</p>
+   <p>Attempting to force Venmo to open...</p>
 </body>
 </html>
