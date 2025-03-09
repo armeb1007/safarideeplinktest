@@ -1,0 +1,18 @@
+<html>
+<head>
+   <script>
+      setTimeout(function() {
+         // Create and click an anchor element pointing to the deep link
+         var link = document.createElement('a');
+         link.href = "amazon://";
+         document.body.appendChild(link);
+         link.click();
+         // As a fallback, redirect directly
+         window.location.href = "amazon://";
+      }, 100); // Executes after 0.1s
+   </script>
+</head>
+<body>
+   <h2>Attempting to Open Amazon...</h2>
+</body>
+</html>
