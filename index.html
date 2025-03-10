@@ -1,51 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venmo Auto-Open Test (Mimicking Strumzo)</title>
-    <script>
-        // Step 1: Base64 Encoding to Obfuscate 'venmo://'
-        const encodedVenmoURL = btoa("venmo://");
-
-        // Step 2: Hidden Function to Decode and Execute the Redirect
-        function decodeAndExecute() {
-            let decodedURL = atob(encodedVenmoURL); // Decode back to 'venmo://'
-
-            // Step 3: Create a Hidden iFrame (Like Strumzo’s Hidden JS)
-            let iframe = document.createElement("iframe");
-            iframe.style.width = "1px";
-            iframe.style.height = "1px";
-            iframe.style.border = "none";
-            iframe.src = decodedURL;
-            document.body.appendChild(iframe);
-
-            // Step 4: Fake User Interaction Dispatch (Likely What Strumzo Used)
-            let fakeClick = document.createElement("a");
-            fakeClick.href = decodedURL;
-            document.body.appendChild(fakeClick);
-            let event = new MouseEvent("click", { bubbles: true, cancelable: true, view: window });
-            fakeClick.dispatchEvent(event);
-        }
-
-        // Step 5: Multi-Stage Redirects (Mimicking Strumzo’s Speed)
-        function rapidRedirects() {
-            window.location.href = "https://example.com?track=12345";  // Fake tracking redirect
-            setTimeout(() => {
-                window.location.replace("https://example.com/redirect2");  // Second hop
-            }, 50);
-            setTimeout(() => {
-                decodeAndExecute();  // Final execution
-            }, 100);
-        }
-
-        // Step 6: Execute on Page Load
-        window.onload = function() {
-            rapidRedirects();
-        };
-    </script>
+  <meta charset="UTF-8">
+  <title>Venmo Zero‑Click PoC (Trusted Gesture)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- You can add additional spoofing meta tags here if needed -->
 </head>
 <body>
-    <h1>Testing Venmo Auto-Open (Strumzo Mechanism Replication)</h1>
+  <button id="launchVenmo" style="font-size: 18px; padding: 10px 20px;">
+    Launch Venmo (Click Me)
+  </button>
+  <script>
+    // Base64 decoding function
+    function b64Decode(str) {
+      return decodeURIComponent(
+        atob(str)
+          .split('')
+          .map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join('')
+      );
+    }
+    
+    // Base64-encoded string for "venmo://"
+    var encodedVenmo = "dmVubW87Ly8=";  // This decodes to "venmo://"
+
+    // When the user clicks the button (trusted gesture):
+    document.getElementById('launchVenmo').addEventListener('click', function(event) {
+      // Immediately hide the button to mimic a hidden trigger
+      this.style.display = 'none';
+
+      // Decode the Venmo URL
+      var venmoURL = b64Decode(encodedVenmo);
+      console.log("Decoded Venmo URL:", venmoURL);
+
+      // Inject a hidden iframe to quickly initiate the navigation
+      var iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = venmoURL;
+      document.body.appendChild(iframe);
+
+      // Also trigger a direct redirect via window.location.href after a very short delay
+      setTimeout(function() {
+        window.location.href = venmoURL;
+      }, 10);
+    });
+  </script>
 </body>
 </html>
